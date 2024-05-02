@@ -14,7 +14,22 @@ const $inputEmail = document.getElementById("input-email");
 const $inputImagen = document.getElementById("input-imagen");
 const $inputNotas = document.getElementById("input-notas");
 
-//2.EVENT LISTENER DEL SUBMIT
+//2.EVENT LISTENER DEL BLUR
+
+$inputNombre.addEventListener("blur", () => {
+  validateName($inputNombre);
+});
+$inputNumero.addEventListener("blur", () => {
+  validateNumber($inputNumero);
+});
+$inputEmail.addEventListener("blur", () => {
+  validateEmail($inputEmail);
+});
+$inputImagen.addEventListener("blur", () => {
+  validateUrl($inputImagen);
+});
+
+//3.EVENT LISTENER DEL SUBMIT
 
 $form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -39,6 +54,17 @@ $form.addEventListener("submit", (event) => {
   const imagen = $inputImagen.value;
   const notas = $inputNotas.value;
 
-
   agregarContacto(nombre, numero, email, imagen, notas);
+
+  //Resetear formulario
+
+  $form.reset();
+  $inputNombre.classList.remove("is-valid", "is-invalid");
+  $inputNumero.classList.remove("is-valid", "is-invalid");
+  $inputEmail.classList.remove("is-valid", "is-invalid");
+  $inputImagen.classList.remove("is-valid", "is-invalid");
+
+  //Notificar al usuario
+
+  alert(`Contacto creado bajo el nombre de ${nombre}`);
 });

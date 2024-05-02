@@ -94,7 +94,8 @@ export const validateUrl = ($field) => {
   }
 
   //Formato url
-  const regex = /^\b(?:https?|ftp):\/\/[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]$/;
+  const regex =
+    /^\b(?:https?|ftp):\/\/[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]$/;
   if (!regex.test($field.value)) {
     $field.classList.add("is-invalid");
     $field.classList.remove("is-valid");
