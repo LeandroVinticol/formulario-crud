@@ -1,10 +1,15 @@
 import { agregarContacto } from "./abm.js";
+import { cargarTabla } from "./util.js";
 import {
   validateEmail,
   validateName,
   validateNumber,
   validateUrl,
 } from "./validator.js";
+//0.CARGAR TABLA
+
+cargarTabla();
+
 //1.SELECCIONAR ELEMENTOS
 
 const $form = document.getElementById("form-contacto");
@@ -46,7 +51,7 @@ $form.addEventListener("submit", (event) => {
     return;
   }
 
-  alert("Todo Ok");
+  // alert("Todo Ok");
 
   const nombre = $inputNombre.value;
   const numero = $inputNumero.value;
@@ -64,7 +69,17 @@ $form.addEventListener("submit", (event) => {
   $inputEmail.classList.remove("is-valid", "is-invalid");
   $inputImagen.classList.remove("is-valid", "is-invalid");
 
-  //Notificar al usuario
+  //Actualizar tabla
 
-  alert(`Contacto creado bajo el nombre de ${nombre}`);
+  cargarTabla();
+
+  //Notificar al usuario
+  swal.fire({
+    title: "Exito",
+    text: `Contacto creado bajo el nombre de ${nombre}`,
+    icon: "success",
+    showConfirmButton: true,
+    showCancelButton: false,
+    confirmButtonText: "Tremen2",
+  });
 });
