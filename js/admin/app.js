@@ -1,16 +1,21 @@
-import { agregarContacto } from "./abm.js";
-import { cargarTabla } from "./util.js";
+import { agregarContacto, editarContacto } from "./abm.js";
+import { cargarTabla, estaEditando } from "./util.js";
 import {
   validateEmail,
   validateName,
   validateNumber,
   validateUrl,
 } from "./validator.js";
-//0.CARGAR TABLA
+
+// ---------------------------------
+// 1. Cargar tabla
+// ---------------------------------
 
 cargarTabla();
 
-//1.SELECCIONAR ELEMENTOS
+// ---------------------------------
+// 2. Seleccionar elementos
+// ---------------------------------
 
 const $form = document.getElementById("form-contacto");
 const $inputNombre = document.getElementById("input-nombre");
@@ -19,7 +24,9 @@ const $inputEmail = document.getElementById("input-email");
 const $inputImagen = document.getElementById("input-imagen");
 const $inputNotas = document.getElementById("input-notas");
 
-//2.EVENT LISTENER DEL BLUR
+// ---------------------------------
+// 3. Event listeners del blur
+// ---------------------------------
 
 $inputNombre.addEventListener("blur", () => {
   validateName($inputNombre);
@@ -34,12 +41,14 @@ $inputImagen.addEventListener("blur", () => {
   validateUrl($inputImagen);
 });
 
-//3.EVENT LISTENER DEL SUBMIT
+// ---------------------------------
+// 4. Event listener del submit
+// ---------------------------------
 
 $form.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  //Validar campos
+  // A. Validar los campos
 
   if (
     !validateName($inputNombre) ||
@@ -51,7 +60,7 @@ $form.addEventListener("submit", (event) => {
     return;
   }
 
-  // alert("Todo Ok");
+  // B. Todo OK, conseguir valores
 
   const nombre = $inputNombre.value;
   const numero = $inputNumero.value;
@@ -59,9 +68,13 @@ $form.addEventListener("submit", (event) => {
   const imagen = $inputImagen.value;
   const notas = $inputNotas.value;
 
-  agregarContacto(nombre, numero, email, imagen, notas);
+  if (estaEditando()) {
+    editarContacto(nombre, numero, email, imagen, notas);
+  } else {
+    agregarContacto(nombre, numero, email, imagen, notas);
+  }
 
-  //Resetear formulario
+  // C. Resetear formulario
 
   $form.reset();
   $inputNombre.classList.remove("is-valid", "is-invalid");
@@ -69,14 +82,18 @@ $form.addEventListener("submit", (event) => {
   $inputEmail.classList.remove("is-valid", "is-invalid");
   $inputImagen.classList.remove("is-valid", "is-invalid");
 
-  //Actualizar tabla
+  // D. Actualizar tabla
 
   cargarTabla();
 
-  //Notificar al usuario
+  // E. Notificar al usuario
+
+  let mensaje = `Contacto creado bajo el nombre de ${nombre}`;
+  if (estaEditando()) mensaje = "Contacto editado exitosamente";
+
   swal.fire({
     title: "Exito",
-    text: `Contacto creado bajo el nombre de ${nombre}`,
+    text: mensaje,
     icon: "success",
     showConfirmButton: true,
     showCancelButton: false,

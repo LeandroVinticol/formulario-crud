@@ -1,22 +1,53 @@
 import { obtenerContactosDeLS } from "../util.js";
 import { Contacto } from "./Contacto.js";
-import { cargarTabla } from "./util.js";
+import { agregarContactoALS, cargarTabla } from "./util.js";
 
 export const agregarContacto = (nombre, numero, email, imagen, notas) => {
   const contacto = new Contacto(nombre, numero, email, imagen, notas);
 
-  //Local storage
-  const contactos = obtenerContactosDeLS();
-
-  contactos.push(contacto);
-
-  localStorage.setItem("contactos", JSON.stringify(contactos));
+  agregarContactoALS(contacto);
 };
 
-export const editarContacto = () => {};
+export const editarContacto = (nombre, numero, email, imagen, notas) => {
+  // 1. Traer los datos necesarios
+  const contactos = obtenerContactosDeLS();
+  const codigoContacto = sessionStorage.getItem("codigoContacto");
+
+  // 2. Encontrar la posicion del contacto a editar
+  const posicionContacto = contactos.findIndex((contacto) => {
+    return contacto.codigo === codigoContacto;
+  });
+
+  if (posicionContacto === -1) {
+    alert("El contacto no se encontró");
+    sessionStorage.removeItem("codigoContacto");
+    return;
+  }
+
+  // 3. Crear el nuevo objeto contacto
+  const nuevoContacto = new Contacto(nombre, numero, email, imagen, notas);
+
+  // 4. Editar la posicion del contacto existente por el nuevo
+  contactos.splice(posicionContacto, 1, nuevoContacto);
+  // contactos[posicionContacto] = nuevoContacto;
+
+  // 5. Actualizar LS
+  localStorage.setItem("contactos", JSON.stringify(contactos));
+
+  // 6. Eliminar el código de SS
+  sessionStorage.removeItem("codigoContacto");
+
+  // 7. Esconder alert
+  const $alert = document.getElementById("alert-edicion-contacto");
+  $alert.classList.add("d-none");
+
+  // 8. Mostrar boton
+  const $button = document.getElementById("button-cancelar");
+  $button.classList.add("d-none");
+};
 
 export const eliminarContacto = (idContacto, nombreContacto) => {
-  //Confirmar que se desea eliminar el contacto
+  // 1. CONFIRMAR que se desea eliminar el contacto
   swal
     .fire({
       title: "Atención",
@@ -29,22 +60,21 @@ export const eliminarContacto = (idContacto, nombreContacto) => {
     })
     .then((result) => {
       if (result.isConfirmed) {
-        //eliminar contacto
-        console.log("Eliminar el contacto");
-        //obtener lista de contactos
+        // 2. Obtener el listado de contactos
         const contactos = obtenerContactosDeLS();
-        //filtrar contacto
+
+        // 3. Filtrar esa lista para eliminar el contacto con id indicado
         const nuevosContactos = contactos.filter((contacto) => {
           return contacto.codigo !== idContacto;
         });
 
-        //actualizar lista en LS
+        // 4. Actualizar lista en LS
         localStorage.setItem("contactos", JSON.stringify(nuevosContactos));
 
-        //actualizar tabla
+        // 5. Actualizar la tabla
         cargarTabla();
 
-        //notificar al usuario del exito
+        // 6. Notificar al usuario del exito
         swal.fire({
           title: "Exito",
           text: `Contacto ${nombreContacto} eliminado correctamente`,
