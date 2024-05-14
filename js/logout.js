@@ -1,22 +1,22 @@
-// ----------------------------------
-// 1. Proteccion de ruta
-// ----------------------------------
+import { estaLogueado } from "./util.js";
 
-import { estaLogueado } from "./util";
+// -------------------------------------
+// 1. Seleccionar el boton
+// -------------------------------------
 
 const $botonLogout = document.getElementById("boton-salir");
 
-// ----------------------------------
-// 1. Proteccion de ruta
-// ----------------------------------
+// -------------------------------------
+// 2. Mostrar/ocultar el boton
+// -------------------------------------
 
 if (estaLogueado()) {
   $botonLogout.classList.remove("d-none");
 }
 
-// ----------------------------------
-// 1. Proteccion de ruta
-// ----------------------------------
+// -------------------------------------
+// 3. Event listener del boton
+// -------------------------------------
 
 $botonLogout.addEventListener("click", () => {
   swal
@@ -31,12 +31,12 @@ $botonLogout.addEventListener("click", () => {
       if (res.isConfirmed) {
         // Cerrar sesión
 
-        //Eliminar la sesion de SS
-        sessionStorage.removeItem('usuario');
-        sessionStorage.removeItem('estaLogueado');
-        
-        //Redirigir al usuario
-        window.location.assign('/');
+        // a. Eliminar la sesion de SS
+        sessionStorage.removeItem("usuario");
+        sessionStorage.removeItem("estaLogueado");
+
+        // b. Redirigir al usuario
+        window.location.assign("/");
       }
     });
 });
